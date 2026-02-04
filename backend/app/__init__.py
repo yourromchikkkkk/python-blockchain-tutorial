@@ -21,7 +21,8 @@ from backend.wallet.transaction_pool import TransactionPool
 from backend.pubsub import PubSub
 
 app = Flask(__name__)
-CORS(app, resources={ r'/*': { 'origins': 'http://localhost:3000' } })
+# Allow both dev (port 3000) and Docker frontend (port 8080)
+CORS(app, resources={r'/*': {'origins': ['http://localhost:3000', 'http://localhost:8080']}})
 
 def json_response(data, status=200):
     """

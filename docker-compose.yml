@@ -1,0 +1,55 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - 5050:5050
+    env_file:
+      - backend/.env
+    environment:
+      - PUBNUB_USER_ID=node-main
+      - ROOT_HOST=backend-seed
+      - POLL_ROOT=True
+      - POLL_INTERVAL=10
+  
+  backend-peer:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - backend/.env
+    environment:
+      - PUBNUB_USER_ID=node-peer-1
+      - ROOT_HOST=backend
+    expose:
+      - 5050
+
+
+  backend-seed:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - backend/.env
+    environment:
+      - SEED_DATA=True
+      - PUBNUB_USER_ID=node-seed-1
+      - ROOT_HOST=backend
+    profiles:
+      - seed
+    expose:
+      - 5050
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - 8080:80
+    profiles:
+      - client
+    environment:
+      - REACT_APP_API_URL=http://localhost:5050
+    depends_on:
+      - backend
