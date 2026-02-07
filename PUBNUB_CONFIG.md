@@ -28,7 +28,7 @@ The blockchain application uses PubNub for real-time peer-to-peer communication 
 
 1. **Copy the secrets template:**
    ```bash
-   cp env.example .env
+   cp backend/config/env.example backend/config/.env
    ```
 
 2. **Edit secrets.env and add your keys:**

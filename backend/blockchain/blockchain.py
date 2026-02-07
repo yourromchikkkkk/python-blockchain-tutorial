@@ -1,4 +1,5 @@
 from backend.blockchain.block import Block
+from backend.blockchain.exceptions import ChainLengthException, ChainValidationException
 
 class Blockchain:
     """
@@ -21,12 +22,12 @@ class Blockchain:
           - The incoming chain is formatted properly.
         """
         if len(chain) <= len(self.chain):
-            raise Exception('Cannot replace. The incoming chain must be longer.')
+            raise ChainLengthException('Cannot replace. The incoming chain must be longer.')
 
         try:
             Blockchain.is_valid_chain(chain)
         except Exception as e:
-            raise Exception(f'Cannot replace. The incoming chain is invalid: {e}')
+            raise ChainValidationException(f'Cannot replace. The incoming chain is invalid: {e}')
 
         self.chain = chain
 
