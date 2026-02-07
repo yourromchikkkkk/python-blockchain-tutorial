@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-peer
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: backend-peer
+  template:
+    metadata:
+      labels:
+        app: backend-peer
+    spec:
+      containers:
+        - name: backend-peer
+          image: backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5050
+          env:
+            - name: PUBNUB_USER_ID
+              value: node-peer-1
+            - name: ROOT_HOST
+              value: backend
+          envFrom:
+            - secretRef:
+                name: backend-secret
+
+--- # Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-peer
+spec:
+  selector:
+    app: backend-peer
+  ports:
+    - protocol: TCP
+      port: 5050
+      targetPort: 5050
+  type: ClusterIP
