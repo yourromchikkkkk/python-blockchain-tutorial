@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-seed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-seed
+  template:
+    metadata:
+      labels:
+        app: backend-seed
+    spec:
+      containers:
+        - name: backend-seed
+          image: backend:latest 
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5050
+          env:
+            - name: SEED_DATA
+              value: "True"
+            - name: PUBNUB_USER_ID
+              value: node-seed-1
+            - name: ROOT_HOST
+              value: backend
+          envFrom:
+            - secretRef:
+                name: backend-secret
+--- # Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-seed
+spec:
+  selector:
+    app: backend-seed
+  ports:
+    - protocol: TCP
+      port: 5050
+      targetPort: 5050
+  type: ClusterIP
+
+           
